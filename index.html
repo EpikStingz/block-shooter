@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Block Shooting Game</title>
+    <style>
+        canvas {
+            border: 2px solid #000;
+            background-color: #000;
+        }
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        #score-display {
+            color: white;
+            font-size: 24px;
+            margin: 10px;
+        }
+        .block {
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="score-display">Score: 0</div>
+        <div id="game-area" style="width: 800px; height: 600px; position: relative; background: black;"></div>
+    </div>
+    <script>
+        let gameArea = document.getElementById('game-area');
+        let scoreDisplay = document.getElementById('score-display');
+        let score = 0;
+        let blocks = [];
+        const BLOCK_SIZE = 30;
+        const SPAWN_INTERVAL = 2000; // 2 seconds
+
+        // Create a new block
+        function createBlock() {
+            const block = document.createElement('div');
+            block.className = 'block';
+            
+            // Random position
+            const x = Math.random() * (gameArea.offsetWidth - BLOCK_SIZE);
+            const y = Math.random() * (gameArea.offsetHeight - BLOCK_SIZE);
+            
+            block.style.left = x + 'px';
+            block.style.top = y + 'px';
+            
+            gameArea.appendChild(block);
+            blocks.push(block);
+        }
+
+        // Handle clicks
+        gameArea.addEventListener('click', (event) => {
+            const clickedBlock = event.target;
+            if (clickedBlock.className === 'block') {
+                clickedBlock.remove();
+                const index = blocks.indexOf(clickedBlock);
+                if (index > -1) {
+                    blocks.splice(index, 1);
+                    score++;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    // Play pop sound
+                    const popSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU');
+                    popSound.play();
+                }
+            }
+        });
+
+        // Spawn blocks periodically
+        setInterval(createBlock, SPAWN_INTERVAL);
+
+        // Create initial blocks
+        for (let i = 0; i < 10; i++) {
+            createBlock();
+        }
+
+        // Play spawn sound when new block appears
+        const spawnSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU');
+        spawnSound.play();
+    </script>
+</body>
+</html>
